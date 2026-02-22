@@ -1,0 +1,64 @@
+{% load wagtailcore_tags %}
+
+<section id="{{ value.anchor_id|default:'prices' }}"
+         class="bg-white py-16 px-5 tab:py-20 tab:px-8 pc:px-[50px]">
+
+  <h2 class="font-cormorant font-semibold uppercase leading-tight text-heading
+             text-[2rem] tab:text-4xl pc:text-[2.8rem]">
+    {{ value.heading|richtext }}
+  </h2>
+  <div class="h-px bg-accent mt-4 mb-10"></div>
+
+  <div class="grid grid-cols-1 tab:grid-cols-2 pc:grid-cols-3 gap-5">
+    {% for tariff in value.tariffs %}
+    <div class="flex-1 bg-card-bg rounded-3xl px-7 py-9 flex flex-col">
+
+      {# Название тарифа #}
+      <div class="font-montserrat uppercase text-body text-[0.9rem] tracking-[0.18em] font-light
+                  text-center [&_p]:text-center mb-3">
+        {{ tariff.name|richtext }}
+      </div>
+
+      {# Разделитель #}
+      <div class="h-px bg-accent/60 mb-5"></div>
+
+      {# Цена #}
+      <div class="font-cormorant font-semibold text-heading
+                  text-center [&_p]:text-center
+                  text-[2rem] tab:text-[2.4rem] mb-1">
+        {{ tariff.price|richtext }}
+      </div>
+
+      {# Дополнительный текст #}
+      {% if tariff.extra_text %}
+      <div class="font-montserrat uppercase text-body/90 text-[0.65rem] tracking-[0.14em] font-light
+                  text-center [&_p]:text-center mb-6">
+        {{ tariff.extra_text|richtext }}
+      </div>
+      {% else %}
+      <div class="mb-6"></div>
+      {% endif %}
+
+      {# Описание — занимает оставшееся место #}
+      <div class="font-montserrat text-sm text-body text-center leading-relaxed flex-1 mb-8
+                  [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-left">
+        {{ tariff.description|richtext }}
+      </div>
+
+      {# Кнопка #}
+      <div class="flex justify-center">
+        <button data-heading="{{ value.heading|striptags }}"
+                onclick="(window.openFeedbackPopup||function(){})(this.dataset.heading)"
+                class="font-montserrat uppercase text-white bg-accent rounded-full
+                       hover:opacity-80 transition-opacity
+                       text-[0.65rem] tracking-[0.15em] px-7 py-3
+                       tab:text-xs tab:tracking-[0.2em] tab:px-10 tab:py-4">
+          Записаться
+        </button>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+</section>

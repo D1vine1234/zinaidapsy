@@ -14,15 +14,15 @@ def feedback_submit(request):
     name = request.POST.get("name", "").strip()
     phone = request.POST.get("phone", "").strip()
     message = request.POST.get("message", "").strip()
+    source = request.POST.get("source", "").strip()
 
     if not name or not phone:
         return JsonResponse({"ok": False, "error": "Заполните обязательные поля"}, status=400)
 
-    text = (
-        f"📩 <b>Новая заявка с сайта</b>\n\n"
-        f"<b>Имя:</b> {name}\n"
-        f"<b>Телефон:</b> {phone}"
-    )
+    text = f"📩 <b>Новая заявка с сайта</b>"
+    if source:
+        text += f"\n<b>Раздел:</b> {source}"
+    text += f"\n\n<b>Имя:</b> {name}\n<b>Телефон:</b> {phone}"
     if message:
         text += f"\n<b>Сообщение:</b> {message}"
 

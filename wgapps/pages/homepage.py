@@ -5,6 +5,7 @@ from wagtail.blocks import StructBlock, CharBlock
 from wgapps.blocks.first_block import FirstBlock
 from wgapps.blocks.diplomas_block import DiplomaSectionBlock
 from wgapps.blocks.feedback import FeedbackBlock
+from wgapps.blocks.prices_block import PricesSectionBlock
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
@@ -34,6 +35,7 @@ class HomePage(Page):
     content = StreamField([
         ("firstblock", FirstBlock()),
         ("diplomas", DiplomaSectionBlock()),
+        ("prices", PricesSectionBlock()),
         ("feedback", FeedbackBlock()),
     ])
 
