@@ -1,0 +1,203 @@
+{% load wagtailcore_tags %}
+
+<section id="{{ value.anchor_id|default:'feedback' }}"
+         class="bg-[#F3E9DE] py-16 px-5 tab:py-20 tab:px-8 pc:px-[50px]">
+
+
+    <h2 class="font-cormorant font-semibold uppercase leading-tight text-heading
+               text-[2rem] tab:text-4xl pc:text-[2.8rem] mb-10">
+      {{ value.heading }}
+    </h2>
+
+    <form id="feedback-form"
+          class="bg-card-bg rounded-3xl px-7 py-9 tab:px-10 tab:py-10 flex flex-col gap-5">
+
+      {% csrf_token %}
+
+      <div class="flex flex-col gap-1">
+        <label for="fb-name"
+               class="font-montserrat uppercase text-body text-[0.6rem] tracking-[0.18em] font-light">
+          Имя *
+        </label>
+        <input id="fb-name" name="name" type="text" required
+               placeholder="Ваше имя"
+               class="border border-accent/40 rounded-xl px-4 py-3
+                      font-montserrat text-sm text-body bg-white/60
+                      focus:outline-none focus:border-accent transition-colors">
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="fb-phone"
+               class="font-montserrat uppercase text-body text-[0.6rem] tracking-[0.18em] font-light">
+          Телефон *
+        </label>
+        <input id="fb-phone" name="phone" type="tel" required
+               placeholder="+7 (___) ___-__-__"
+               class="border border-accent/40 rounded-xl px-4 py-3
+                      font-montserrat text-sm text-body bg-white/60
+                      focus:outline-none focus:border-accent transition-colors">
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="fb-message"
+               class="font-montserrat uppercase text-body text-[0.6rem] tracking-[0.18em] font-light">
+          Сообщение
+        </label>
+        <textarea id="fb-message" name="message" rows="4"
+                  placeholder="Ваш вопрос или пожелание..."
+                  class="border border-accent/40 rounded-xl px-4 py-3
+                         font-montserrat text-sm text-body bg-white/60 resize-none
+                         focus:outline-none focus:border-accent transition-colors"></textarea>
+      </div>
+
+      <button type="submit"
+              class="self-start font-montserrat uppercase text-white bg-accent rounded-full
+                     hover:opacity-80 transition-opacity
+                     text-[0.65rem] tracking-[0.15em] px-7 py-3
+                     tab:text-xs tab:tracking-[0.2em] tab:px-10 tab:py-4
+                     disabled:opacity-50">
+        Отправить
+      </button>
+
+      <p id="fb-error"
+         class="hidden font-montserrat text-sm text-red-600 text-center">
+        Произошла ошибка. Попробуйте позже.
+      </p>
+
+    </form>
+
+</section>
+
+{# Попап благодарности #}
+<div id="fb-popup"
+     class="fixed inset-0 z-50 flex items-center justify-center px-5
+            opacity-0 pointer-events-none transition-opacity duration-300">
+
+  {# Затемнённый фон #}
+  <div id="fb-popup-backdrop"
+       class="absolute inset-0 bg-black/40"></div>
+
+  {# Карточка #}
+  <div class="relative bg-card-bg rounded-3xl px-10 py-12 max-w-sm w-full text-center
+              shadow-xl translate-y-4 transition-transform duration-300"
+       id="fb-popup-card">
+
+    <p class="font-cormorant font-semibold uppercase text-heading text-2xl mb-3 leading-tight">
+      Спасибо!
+    </p>
+    <p class="font-montserrat text-body text-xs tracking-[0.12em] font-light leading-relaxed mb-8">
+      Мы свяжемся с вами<br>в ближайшее время.
+    </p>
+
+    <button id="fb-popup-close"
+            class="font-montserrat uppercase text-white bg-accent rounded-full
+                   hover:opacity-80 transition-opacity
+                   text-[0.65rem] tracking-[0.15em] px-8 py-3">
+      Закрыть
+    </button>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  const form = document.getElementById('feedback-form');
+  if (!form) return;
+
+  // Phone mask: always starts with 7, formats as 7 (XXX) XXX-XX-XX
+  const phoneInput = document.getElementById('fb-phone');
+  if (phoneInput) {
+    function applyMask(raw) {
+      // leave only digits
+      let digits = raw.replace(/\D/g, '');
+      // replace leading 8 with 7, prepend 7 if missing
+      if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+      if (!digits.startsWith('7')) digits = '7' + digits;
+      digits = digits.slice(0, 11);
+
+      let result = '7';
+      if (digits.length > 1) result += ' (' + digits.slice(1, 4);
+      if (digits.length >= 4) result += ') ' + digits.slice(4, 7);
+      if (digits.length >= 7) result += '-' + digits.slice(7, 9);
+      if (digits.length >= 9) result += '-' + digits.slice(9, 11);
+      return result;
+    }
+
+    phoneInput.addEventListener('input', function () {
+      const pos = this.selectionStart;
+      const before = this.value.length;
+      this.value = applyMask(this.value);
+      // keep cursor near end of typed digits
+      const diff = this.value.length - before;
+      this.setSelectionRange(pos + diff, pos + diff);
+    });
+
+    phoneInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && this.value === '7') {
+        e.preventDefault();
+      }
+    });
+
+    phoneInput.addEventListener('focus', function () {
+      if (!this.value) this.value = '7';
+    });
+
+    phoneInput.addEventListener('blur', function () {
+      if (this.value === '7') this.value = '';
+    });
+  }
+
+  // Popup helpers
+  const popup   = document.getElementById('fb-popup');
+  const popupCard = document.getElementById('fb-popup-card');
+
+  function openPopup() {
+    popup.classList.remove('opacity-0', 'pointer-events-none');
+    popup.classList.add('opacity-100');
+    popupCard.classList.remove('translate-y-4');
+  }
+
+  function closePopup() {
+    popup.classList.add('opacity-0', 'pointer-events-none');
+    popup.classList.remove('opacity-100');
+    popupCard.classList.add('translate-y-4');
+  }
+
+  document.getElementById('fb-popup-close').addEventListener('click', closePopup);
+  document.getElementById('fb-popup-backdrop').addEventListener('click', closePopup);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closePopup();
+  });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const btn = form.querySelector('button[type="submit"]');
+    const error = document.getElementById('fb-error');
+
+    btn.disabled = true;
+    error.classList.add('hidden');
+
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch('/feedback/submit/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': data.get('csrfmiddlewaretoken') },
+        body: data,
+      });
+      const json = await res.json();
+      if (json.ok) {
+        form.reset();
+        openPopup();
+      } else {
+        error.classList.remove('hidden');
+      }
+    } catch {
+      error.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
