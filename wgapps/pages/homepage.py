@@ -30,6 +30,7 @@ class HomePage(Page):
     telegram_url = models.CharField(max_length=200, blank=True, verbose_name="Telegram URL")
     whatsapp_url = models.CharField(max_length=200, blank=True, verbose_name="WhatsApp URL")
     vk_url = models.CharField(max_length=200, blank=True, verbose_name="ВКонтакте URL")
+    max_url = models.CharField(max_length=200, blank=True, verbose_name="MAX URL")
 
     # Page content
     content = StreamField([
@@ -47,6 +48,7 @@ class HomePage(Page):
             FieldPanel("telegram_url"),
             FieldPanel("whatsapp_url"),
             FieldPanel("vk_url"),
+            FieldPanel("max_url"),
         ], heading="Социальные сети"),
         FieldPanel("content"),
     ]
