@@ -16,10 +16,12 @@ module.exports = {
     },
     extend: {
       colors: {
-        "site-bg":  "#e5d9ce",
-        "card-bg":  "#f0e9e1",
+        "site-bg":  "#B0E0E6",
+        "card-bg":  "#E3D0BC",
         "forest":   "#1a3a3a",
-        "accent":   "#b06060",
+        "accent":   "#A57C5C",
+        "heading":  "#5E4B3C",
+        "body":     "#6B5A4C",
       },
       fontFamily: {
         cormorant:  ['"Cormorant Garamond"', "serif"],

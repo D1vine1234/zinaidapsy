@@ -1,13 +1,13 @@
 {% load wagtailimages_tags %}
 
 <section id="{{ value.anchor_id|default:'hero' }}"
-         class="bg-site-bg
+         class="bg-[#F3E9DE]
                 pt-24 pb-12 px-5
-                tab:pt-28 tab:pb-16 tab:px-12 pc:flex pc:items-center pc:px-20 pc:pt-20 pc:pb-0">
+                tab:pt-28 tab:pb-16 tab:px-12 pc:px-[50px] pc:flex pc:items-center pc:pt-20 pc:pb-0">
 
   <div class="w-full
               flex flex-col gap-5
-              tab:grid tab:grid-cols-[55%_45%] tab:gap-6">
+              tab:grid tab:grid-cols-2 tab:gap-6">
 
     {# ── Карточка с текстом ────────────────────────────────────── #}
     <div class="bg-card-bg rounded-3xl
@@ -16,14 +16,14 @@
                 pc:px-14 pc:py-12">
 
       {# Заголовок #}
-      <h1 class="font-cormorant font-semibold uppercase leading-tight text-forest mb-3
+      <h1 class="font-cormorant font-semibold uppercase leading-tight text-heading mb-3
                  text-[2rem] tab:text-5xl pc:text-[3.5rem]">
         {{ value.heading }}
       </h1>
 
       {# Подзаголовок #}
       {% if value.subheading %}
-      <p class="font-montserrat uppercase text-forest font-light
+      <p class="font-montserrat uppercase text-body font-light
                 text-[0.65rem] tracking-[0.18em] mb-5
                 tab:text-sm tab:tracking-[0.22em] tab:mb-6">
         {{ value.subheading }}
@@ -35,7 +35,7 @@
 
       {# Описание #}
       {% if value.description %}
-      <p class="font-montserrat uppercase text-forest font-light leading-[2]
+      <p class="font-montserrat uppercase text-body font-light leading-[2]
                 text-[0.65rem] tracking-[0.15em] mb-7
                 tab:text-xs tab:tracking-[0.18em] tab:mb-8">
         {{ value.description }}
