@@ -153,3 +153,14 @@ WAGTAIL_SITE_NAME = "Zinaida Psy"
 # Токен берётся у @BotFather, chat_id — ID вашей группы (отрицательное число)
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+
+# Google Forms → Sheets (без сервисного аккаунта)
+# Создайте Google Form, откройте предпросмотр, найдите в коде страницы
+# action формы (GOOGLE_FORM_ID) и name каждого поля (entry.XXXXXXXXX)
+GOOGLE_FORM_ID     = os.environ.get("GOOGLE_FORM_ID", "")
+GOOGLE_ENTRY_NAME             = os.environ.get("GOOGLE_ENTRY_NAME", "")
+GOOGLE_ENTRY_PHONE            = os.environ.get("GOOGLE_ENTRY_PHONE", "")
+GOOGLE_ENTRY_MESSAGE          = os.environ.get("GOOGLE_ENTRY_MESSAGE", "")
+GOOGLE_ENTRY_SOURCE           = os.environ.get("GOOGLE_ENTRY_SOURCE", "")
+GOOGLE_ENTRY_CONTACT_METHOD   = os.environ.get("GOOGLE_ENTRY_CONTACT_METHOD", "")
+GOOGLE_ENTRY_TELEGRAM_USERNAME = os.environ.get("GOOGLE_ENTRY_TELEGRAM_USERNAME", "")

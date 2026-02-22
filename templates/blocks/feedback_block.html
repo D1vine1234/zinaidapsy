@@ -38,6 +38,41 @@
                     focus:outline-none focus:border-accent transition-colors">
     </div>
 
+    <div class="flex flex-col gap-2">
+      <label class="font-montserrat uppercase text-body text-[0.6rem] tracking-[0.18em] font-light">
+        Удобный способ связи
+      </label>
+      <div class="flex flex-wrap gap-x-5 gap-y-2">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="contact_method" value="Звонок"
+                 class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+          <span class="font-montserrat text-xs text-body">Звонок</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="contact_method" value="WhatsApp"
+                 class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+          <span class="font-montserrat text-xs text-body">WhatsApp</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="contact_method" value="Telegram"
+                 class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+          <span class="font-montserrat text-xs text-body">Telegram</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="contact_method" value="Мессенджер MAX"
+                 class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+          <span class="font-montserrat text-xs text-body">Мессенджер MAX</span>
+        </label>
+      </div>
+      <div id="fb-tg-wrap" class="hidden mt-1">
+        <input id="fb-tg-username" name="telegram_username" type="text"
+               placeholder="@ваш_никнейм_в_Telegram"
+               class="w-full border border-accent/40 rounded-xl px-4 py-3
+                      font-montserrat text-sm text-body bg-white/60
+                      focus:outline-none focus:border-accent transition-colors">
+      </div>
+    </div>
+
     <div class="flex flex-col gap-1">
       <label for="fb-message"
              class="font-montserrat uppercase text-body text-[0.6rem] tracking-[0.18em] font-light">
@@ -126,6 +161,41 @@
                class="border border-accent/40 rounded-xl px-4 py-3
                       font-montserrat text-sm text-body bg-white/60
                       focus:outline-none focus:border-accent transition-colors">
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-montserrat uppercase text-body text-[0.6rem] tracking-[0.18em] font-light">
+          Удобный способ связи
+        </label>
+        <div class="flex flex-wrap gap-x-5 gap-y-2">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="contact_method" value="Звонок"
+                   class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+            <span class="font-montserrat text-xs text-body">Звонок</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="contact_method" value="WhatsApp"
+                   class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+            <span class="font-montserrat text-xs text-body">WhatsApp</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="contact_method" value="Telegram"
+                   class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+            <span class="font-montserrat text-xs text-body">Telegram</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="contact_method" value="Мессенджер MAX"
+                   class="accent-[color:var(--color-accent,#8B5E52)] cursor-pointer">
+            <span class="font-montserrat text-xs text-body">Мессенджер MAX</span>
+          </label>
+        </div>
+        <div id="fb-modal-tg-wrap" class="hidden mt-1">
+          <input id="fb-modal-tg-username" name="telegram_username" type="text"
+                 placeholder="@ваш_никнейм_в_Telegram"
+                 class="w-full border border-accent/40 rounded-xl px-4 py-3
+                        font-montserrat text-sm text-body bg-white/60
+                        focus:outline-none focus:border-accent transition-colors">
+        </div>
       </div>
 
       <div class="flex flex-col gap-1">
@@ -242,6 +312,31 @@
   setupPhoneMask(document.getElementById('fb-phone'));
   setupPhoneMask(document.getElementById('fb-modal-phone'));
 
+  // ── Способ связи: показ/скрытие поля никнейма Telegram ──────────────────
+  function setupContactMethod(form, tgWrapId, tgInputId) {
+    const tgWrap  = document.getElementById(tgWrapId);
+    const tgInput = document.getElementById(tgInputId);
+    if (!form || !tgWrap || !tgInput) return;
+
+    form.querySelectorAll('input[name="contact_method"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        if (this.value === 'Telegram') {
+          tgWrap.classList.remove('hidden');
+          tgInput.required = true;
+        } else {
+          tgWrap.classList.add('hidden');
+          tgInput.required = false;
+          tgInput.value = '';
+        }
+      });
+    });
+
+    form.addEventListener('reset', function () {
+      tgWrap.classList.add('hidden');
+      tgInput.required = false;
+    });
+  }
+
   // ── Попап благодарности ─────────────────────────────────────────────────
   const successPopup = document.getElementById('fb-popup');
   const successCard  = document.getElementById('fb-popup-card');
@@ -319,6 +414,7 @@
 
   const inlineForm = document.getElementById('feedback-form');
   if (inlineForm) {
+    setupContactMethod(inlineForm, 'fb-tg-wrap', 'fb-tg-username');
     inlineForm.addEventListener('submit', function (e) {
       e.preventDefault();
       submitForm(inlineForm, document.getElementById('fb-error'), openSuccess);
@@ -327,6 +423,7 @@
 
   const modalForm = document.getElementById('fb-modal-form');
   if (modalForm) {
+    setupContactMethod(modalForm, 'fb-modal-tg-wrap', 'fb-modal-tg-username');
     modalForm.addEventListener('submit', function (e) {
       e.preventDefault();
       submitForm(modalForm, document.getElementById('fb-modal-error'), function () {
