@@ -1,0 +1,69 @@
+{% load wagtailimages_tags %}
+
+<section id="{{ value.anchor_id|default:'hero' }}"
+         class="bg-site-bg
+                pt-24 pb-12 px-5
+                tab:pt-28 tab:pb-16 tab:px-12 pc:flex pc:items-center pc:px-20 pc:pt-20 pc:pb-0">
+
+  <div class="w-full
+              flex flex-col gap-5
+              tab:grid tab:grid-cols-[55%_45%] tab:gap-6">
+
+    {# ── Карточка с текстом ────────────────────────────────────── #}
+    <div class="bg-card-bg rounded-3xl
+                px-7 py-9
+                tab:px-10 tab:py-10
+                pc:px-14 pc:py-12">
+
+      {# Заголовок #}
+      <h1 class="font-cormorant font-semibold uppercase leading-tight text-forest mb-3
+                 text-[2rem] tab:text-5xl pc:text-[3.5rem]">
+        {{ value.heading }}
+      </h1>
+
+      {# Подзаголовок #}
+      {% if value.subheading %}
+      <p class="font-montserrat uppercase text-forest font-light
+                text-[0.65rem] tracking-[0.18em] mb-5
+                tab:text-sm tab:tracking-[0.22em] tab:mb-6">
+        {{ value.subheading }}
+      </p>
+      {% endif %}
+
+      {# Разделитель #}
+      <div class="h-px bg-accent w-2/3 mb-5 tab:mb-6"></div>
+
+      {# Описание #}
+      {% if value.description %}
+      <p class="font-montserrat uppercase text-forest font-light leading-[2]
+                text-[0.65rem] tracking-[0.15em] mb-7
+                tab:text-xs tab:tracking-[0.18em] tab:mb-8">
+        {{ value.description }}
+      </p>
+      {% endif %}
+
+      {# Кнопка #}
+      {% if value.button_text %}
+      <a href="{{ value.button_link|default:'#' }}"
+         class="inline-block font-montserrat uppercase text-white bg-accent rounded-full
+                hover:opacity-80 transition-opacity
+                text-[0.65rem] tracking-[0.15em] px-7 py-3
+                tab:text-xs tab:tracking-[0.2em] tab:px-10 tab:py-4">
+        {{ value.button_text }}
+      </a>
+      {% endif %}
+
+    </div>
+
+    <div class="relative rounded-3xl overflow-hidden
+                min-h-[280px]
+                tab:min-h-0">
+      {% if value.image %}
+        {% image value.image original as img %}
+        <img src="{{ img.url }}" alt="{{ img.alt }}"
+             class="absolute inset-0 w-full h-full object-cover object-top">
+      {% endif %}
+    </div>
+
+  </div>
+</section>

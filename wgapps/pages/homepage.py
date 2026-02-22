@@ -1,0 +1,52 @@
+from django.db import models
+from wagtail.models import Page
+from wagtail.fields import StreamField
+from wagtail.blocks import StructBlock, CharBlock
+from wgapps.blocks.first_block import FirstBlock
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+
+
+class NavLinkBlock(StructBlock):
+    text = CharBlock(label="Название пункта")
+    anchor = CharBlock(label="Якорь (например: #hero)")
+
+    class Meta:
+        label = "Пункт меню"
+        icon = "link"
+
+
+class HomePage(Page):
+    # Navigation
+    nav_links = StreamField(
+        [("link", NavLinkBlock())],
+        blank=True,
+        verbose_name="Пункты меню",
+    )
+
+    # Social links
+    telegram_url = models.CharField(max_length=200, blank=True, verbose_name="Telegram URL")
+    whatsapp_url = models.CharField(max_length=200, blank=True, verbose_name="WhatsApp URL")
+    vk_url = models.CharField(max_length=200, blank=True, verbose_name="ВКонтакте URL")
+
+    # Page content
+    content = StreamField([
+        ("firstblock", FirstBlock()),
+    ])
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel([
+            FieldPanel("nav_links"),
+        ], heading="Навигация"),
+        MultiFieldPanel([
+            FieldPanel("telegram_url"),
+            FieldPanel("whatsapp_url"),
+            FieldPanel("vk_url"),
+        ], heading="Социальные сети"),
+        FieldPanel("content"),
+    ]
+
+    template = "pages/home_page.html"
+    max_count = 1
+
+    class Meta:
+        verbose_name = "Главная страница"
