@@ -1111,6 +1111,11 @@ video {
   padding-bottom: 3rem;
 }
 
+.px-\[20px\] {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .pb-12 {
   padding-bottom: 3rem;
 }
@@ -1563,6 +1568,11 @@ video {
     padding-bottom: 1rem;
   }
 
+  .tab\:px-\[30px\] {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
   .tab\:pb-16 {
     padding-bottom: 4rem;
   }
@@ -1658,6 +1668,10 @@ video {
 
   .pc\:pt-\[100px\] {
     padding-top: 100px;
+  }
+
+  .pc\:pb-\[50px\] {
+    padding-bottom: 50px;
   }
 
   .pc\:text-\[2\.75rem\] {
