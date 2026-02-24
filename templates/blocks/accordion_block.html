@@ -1,0 +1,39 @@
+{% load wagtailcore_tags %}
+
+<section class="py-16 px-[20px] tab:py-20 tab:px-[30px] pc:px-[50px]">
+
+  {% if value.heading %}
+  <h2 class="font-cormorant font-semibold uppercase leading-tight text-heading
+             text-[2rem] tab:text-4xl pc:text-[2.8rem] mb-10 border-b-2 border-accent pb-4">
+    {{ value.heading|richtext }}
+  </h2>
+  {% endif %}
+
+  <div class="w-full flex flex-col gap-4">
+    {% for item in value.points %}
+    <div x-data="{ open: {{ forloop.first|yesno:'true,false' }} }"
+         class="w-full bg-white rounded-3xl px-7 py-6 tab:px-10 tab:py-8">
+
+      <button @click="open = !open"
+              class="w-full flex items-center justify-between gap-4 text-left">
+        <span class="font-cormorant font-semibold text-heading leading-snug">
+          <span class="text-2xl tab:text-3xl">{{ forloop.counter }}.</span>
+          <span class="text-xl tab:text-2xl"> {{ item.heading|richtext|striptags }}</span>
+        </span>
+        <span class="shrink-0 w-9 h-9 flex items-center justify-center
+                     text-body/50 text-3xl leading-none transition-transform duration-300"
+              :class="open ? 'rotate-45' : 'rotate-0'">+</span>
+      </button>
+
+      <div x-show="open"
+           x-collapse
+           class="mt-5 font-montserrat text-sm text-body font-light leading-relaxed
+                  [&_p]:mb-3 [&_p:last-child]:mb-0">
+        {{ item.contents|richtext }}
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+</section>
