@@ -1,159 +1,161 @@
 {% load wagtailimages_tags %}
 
-<section id="{{ value.anchor_id|default:'education' }}"
-         class="py-16 px-[20px] tab:py-20 tab:px-[30px] pc:px-[50px]"
-         x-data="{
-           lightbox: null,
-           rotation: 0,
-           open(url) { this.lightbox = url; this.rotation = 0; },
-           close() { this.lightbox = null; },
-           rotate() { this.rotation = (this.rotation + 90) % 360; },
-           get step() {
-             const first = $refs.slider.firstElementChild;
-             return first ? first.offsetWidth + 16 : 300;
-           },
-           prev() { $refs.slider.scrollBy({ left: -this.step, behavior: 'smooth' }); },
-           next() { $refs.slider.scrollBy({ left:  this.step, behavior: 'smooth' }); }
-         }"
-         @keydown.escape.window="close()"
-         @keydown.r.window="lightbox && rotate()">
+<div class="pc:py-[50px] tab:py-[30px] py-[20px]">
+  <section id="{{ value.anchor_id|default:'education' }}"
+          class="py-16 px-[20px] tab:py-20 tab:px-[30px] pc:px-[50px] bg-card-bg rounded-[20px]"
+          x-data="{
+            lightbox: null,
+            rotation: 0,
+            open(url) { this.lightbox = url; this.rotation = 0; },
+            close() { this.lightbox = null; },
+            rotate() { this.rotation = (this.rotation + 90) % 360; },
+            get step() {
+              const first = $refs.slider.firstElementChild;
+              return first ? first.offsetWidth + 16 : 300;
+            },
+            prev() { $refs.slider.scrollBy({ left: -this.step, behavior: 'smooth' }); },
+            next() { $refs.slider.scrollBy({ left:  this.step, behavior: 'smooth' }); }
+          }"
+          @keydown.escape.window="close()"
+          @keydown.r.window="lightbox && rotate()">
 
-  {# ── Шапка: заголовок + мобильные стрелки ───────────────── #}
-  <div class="flex items-center justify-between pc:mb-[30px] mb-[20px]">
+    {# ── Шапка: заголовок + мобильные стрелки ───────────────── #}
+    <div class="flex items-center justify-between pc:mb-[30px] mb-[20px]">
 
-    {% if value.heading %}
-    <h2 class="font-cormorant font-semibold uppercase text-heading
-               text-3xl tab:text-4xl pc:text-[2.75rem]">
-      {{ value.heading }}
-    </h2>
-    {% endif %}
+      {% if value.heading %}
+      <h2 class="font-cormorant font-semibold uppercase text-heading
+                text-3xl tab:text-4xl pc:text-[2.75rem]">
+        {{ value.heading }}
+      </h2>
+      {% endif %}
 
-    {# ── Стрелки на мобильном (рядом с заголовком) ─── #}
-    <div class="flex tab:hidden gap-2 shrink-0 ml-4">
+      {# ── Стрелки на мобильном (рядом с заголовком) ─── #}
+      <div class="flex tab:hidden gap-2 shrink-0 ml-4">
+        <button type="button" aria-label="Назад"
+                @click="prev()"
+                class="flex items-center justify-center
+                      w-9 h-9 rounded-full bg-card-bg text-heading shadow-sm
+                      hover:bg-accent hover:text-white transition-colors duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button type="button" aria-label="Вперёд"
+                @click="next()"
+                class="flex items-center justify-center
+                      w-9 h-9 rounded-full bg-card-bg text-heading shadow-sm
+                      hover:bg-accent hover:text-white transition-colors duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="relative">
+
+      {# ── Трек слайдера ──────────────────────────────────────── #}
+      <div x-ref="slider"
+          class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory
+                  pb-2 -mb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+
+        {% for diploma_image in value.diplomas %}
+        <div class="flex-shrink-0 snap-start
+                    w-[82%] tab:w-[calc(50%-8px)] pc:w-[calc(33.333%-11px)]
+                    bg-card-bg rounded-3xl overflow-hidden">
+          <div class="aspect-[4/5] w-full bg-white/50 flex items-center justify-center">
+            {% if diploma_image %}
+              {% image diploma_image original as img %}
+              <img src="{{ img.url }}" alt="{{ img.alt }}"
+                  class="w-full h-full object-contain cursor-zoom-in"
+                  @click="open('{{ img.url }}')">
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+
+      {# ── Стрелки на планшете и ПК (по бокам) ────────────────── #}
       <button type="button" aria-label="Назад"
               @click="prev()"
-              class="flex items-center justify-center
-                     w-9 h-9 rounded-full bg-card-bg text-heading shadow-sm
-                     hover:bg-accent hover:text-white transition-colors duration-200">
+              class="hidden tab:flex
+                    absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5
+                    w-10 h-10 rounded-full bg-card-bg text-heading shadow-md
+                    items-center justify-center
+                    hover:bg-accent hover:text-white transition-colors duration-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
         </svg>
       </button>
+
       <button type="button" aria-label="Вперёд"
               @click="next()"
-              class="flex items-center justify-center
-                     w-9 h-9 rounded-full bg-card-bg text-heading shadow-sm
-                     hover:bg-accent hover:text-white transition-colors duration-200">
+              class="hidden tab:flex
+                    absolute right-0 top-1/2 -translate-y-1/2 translate-x-5
+                    w-10 h-10 rounded-full bg-card-bg text-heading shadow-md
+                    items-center justify-center
+                    hover:bg-accent hover:text-white transition-colors duration-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
         </svg>
       </button>
-    </div>
 
-  </div>
+      {# ── Лайтбокс ────────────────────────────────────────────── #}
+      <div x-show="lightbox"
+          x-transition:enter="transition duration-200"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="transition duration-150"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out"
+          @click="close()"
+          style="display:none">
 
-  <div class="relative">
+        <img :src="lightbox" alt=""
+            :style="`transform: rotate(${rotation}deg)`"
+            class="max-h-[78vh] max-w-[82vw] object-contain rounded-xl shadow-2xl transition-transform duration-300"
+            @click.stop>
 
-    {# ── Трек слайдера ──────────────────────────────────────── #}
-    <div x-ref="slider"
-         class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory
-                pb-2 -mb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {# ── Кнопка поворота ─── #}
+        <button type="button" aria-label="Повернуть"
+                @click.stop="rotate()"
+                class="absolute bottom-6 left-1/2 -translate-x-1/2
+                      flex items-center justify-center gap-2
+                      px-5 py-2.5 rounded-full bg-white text-gray-800 text-sm font-medium shadow-lg
+                      hover:bg-gray-100 active:scale-95 transition-all duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9
+                    m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2
+                    m15.357 2H15"/>
+          </svg>
+          Повернуть
+        </button>
 
-      {% for diploma_image in value.diplomas %}
-      <div class="flex-shrink-0 snap-start
-                  w-[82%] tab:w-[calc(50%-8px)] pc:w-[calc(33.333%-11px)]
-                  bg-card-bg rounded-3xl overflow-hidden">
-        <div class="aspect-[4/5] w-full bg-white/50 flex items-center justify-center">
-          {% if diploma_image %}
-            {% image diploma_image original as img %}
-            <img src="{{ img.url }}" alt="{{ img.alt }}"
-                 class="w-full h-full object-contain cursor-zoom-in"
-                 @click="open('{{ img.url }}')">
-          {% endif %}
-        </div>
+        {# ── Кнопка закрытия ─── #}
+        <button type="button" aria-label="Закрыть"
+                @click.stop="close()"
+                class="absolute top-4 right-4
+                      flex items-center justify-center
+                      w-9 h-9 rounded-full bg-white/20 text-white
+                      hover:bg-white/30 transition-colors duration-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
       </div>
-      {% endfor %}
 
     </div>
 
-    {# ── Стрелки на планшете и ПК (по бокам) ────────────────── #}
-    <button type="button" aria-label="Назад"
-            @click="prev()"
-            class="hidden tab:flex
-                   absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5
-                   w-10 h-10 rounded-full bg-card-bg text-heading shadow-md
-                   items-center justify-center
-                   hover:bg-accent hover:text-white transition-colors duration-200">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-      </svg>
-    </button>
-
-    <button type="button" aria-label="Вперёд"
-            @click="next()"
-            class="hidden tab:flex
-                   absolute right-0 top-1/2 -translate-y-1/2 translate-x-5
-                   w-10 h-10 rounded-full bg-card-bg text-heading shadow-md
-                   items-center justify-center
-                   hover:bg-accent hover:text-white transition-colors duration-200">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-      </svg>
-    </button>
-
-    {# ── Лайтбокс ────────────────────────────────────────────── #}
-    <div x-show="lightbox"
-         x-transition:enter="transition duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-zoom-out"
-         @click="close()"
-         style="display:none">
-
-      <img :src="lightbox" alt=""
-           :style="`transform: rotate(${rotation}deg)`"
-           class="max-h-[78vh] max-w-[82vw] object-contain rounded-xl shadow-2xl transition-transform duration-300"
-           @click.stop>
-
-      {# ── Кнопка поворота ─── #}
-      <button type="button" aria-label="Повернуть"
-              @click.stop="rotate()"
-              class="absolute bottom-6 left-1/2 -translate-x-1/2
-                     flex items-center justify-center gap-2
-                     px-5 py-2.5 rounded-full bg-white text-gray-800 text-sm font-medium shadow-lg
-                     hover:bg-gray-100 active:scale-95 transition-all duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9
-                   m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2
-                   m15.357 2H15"/>
-        </svg>
-        Повернуть
-      </button>
-
-      {# ── Кнопка закрытия ─── #}
-      <button type="button" aria-label="Закрыть"
-              @click.stop="close()"
-              class="absolute top-4 right-4
-                     flex items-center justify-center
-                     w-9 h-9 rounded-full bg-white/20 text-white
-                     hover:bg-white/30 transition-colors duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-
-    </div>
-
-  </div>
-
-</section>
+  </section>
+</div>
